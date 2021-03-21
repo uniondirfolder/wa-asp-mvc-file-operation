@@ -1,0 +1,26 @@
+﻿
+@using wa_asp_mvc_file_operation.Data.Models
+
+@{
+    ViewBag.Title = "Авторизація";
+}
+
+@model CloudUser
+
+<div class="center-block">
+    <h2>Авторизація</h2>
+    <br />
+    @using (Html.BeginForm("Index", "Authorization", FormMethod.Post))
+    {
+        <div class="form-group">
+            @Html.Label("Login", "Логін:")
+            @Html.TextBoxFor(m => m.Login, new { @class = "form-control", placeholder = "Введіть логін", required = "" })
+        </div>
+        <div class="form-group">
+            @Html.Label("Password", "Пароль:")
+            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Введіть пароль", required = "" })
+        </div>
+
+        <button type="submit" class="btn btn-default">Увійти</button>
+    }
+</div>

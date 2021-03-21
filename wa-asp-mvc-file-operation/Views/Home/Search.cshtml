@@ -1,24 +1,24 @@
-﻿@{
-    ViewBag.Title = "Cloud";
+﻿@model List<wa_asp_mvc_file_operation.Data.Models.ServerFile>
+
+@{
+    ViewBag.Title = "Search";
 }
 
-@model List<wa_asp_mvc_file_operation.Data.Models.ServerFile>
-
 <div class="row">
+    <h2>Результати пошуку</h2>
     <br />
+
     <ul class="list-group">
         @{
             foreach (var file in Model)
             {
                 if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.File)
                 {
-                    @Html.Partial("_fileView", file)
-                    ;
+                    @Html.Partial("_fileView", file);
                 }
                 else if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.Folder)
                 {
-                    @Html.Partial("_folderView", file)
-                    ;
+                    @Html.Partial("_folderView", file);
                 }
             }
         }

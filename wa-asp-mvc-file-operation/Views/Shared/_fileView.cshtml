@@ -1,0 +1,32 @@
+﻿@using System.Text
+@model wa_asp_mvc_file_operation.Data.Models.ServerFile
+
+<li class="list-group-item">
+    <img src="/Content/Images/FileIcon.png"
+         alt="imageFile" />
+    <span>@Model.Name</span>
+    <br />
+    <div class="btn-group navBtn" style="margin: 0">
+        <button type="button"
+                class="btn btn-primary navbar-btn navBtn"
+                onclick="window.location.href = '@Url.Action("RemoveFile", "Home", new {fileName = @HttpServerUtility.UrlTokenEncode(Encoding.Unicode.GetBytes(@Model.Path))})'"
+                title="Видалити">
+            <span class="glyphicon glyphicon glyphicon-trash"></span>
+            <span>Видалити</span>
+        </button>
+        <button type="button"
+                class="btn btn-primary navbar-btn navBtn"
+                onclick="rename('@HttpServerUtility.UrlTokenEncode(Encoding.Unicode.GetBytes(@Model.Path))', '@Model.FileType');"
+                title="Перейменувати">
+            <span class="glyphicon glyphicon glyphicon-pencil"></span>
+            <span>Перейменувати</span>
+        </button>
+        <button type="button"
+                class="btn btn-primary navbar-btn navBtn"
+                onclick="move('@HttpServerUtility.UrlTokenEncode(Encoding.Unicode.GetBytes(@Model.Path))', '@Model.FileType');"
+                title="Перемістити">
+            <span class="glyphicon glyphicon glyphicon-move"></span>
+            <span>Перемістити</span>
+        </button>
+    </div>
+</li>

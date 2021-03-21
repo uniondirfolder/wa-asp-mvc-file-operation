@@ -1,36 +1,98 @@
-﻿<!DOCTYPE html>
+﻿@{
+    bool isShowButtons = !bool.Parse(Session["authorized"]?.ToString() ?? "false");
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <script>
+        function rename(name, type) {
+            $('#renameFile').modal('show');
+            $('#oldFileName').val(name);
+            $('#fileType').val(type);
+        }
+
+        function move(name, type) {
+            $('#moveFile').modal('show');
+            $('#movedFileName').val(name);
+            $('#movedfileType').val(type);
+        }
+    </script>
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+    <nav class="navbar navbar-default navbar-fixed-top navbar-inverse">
+        <div>
+            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")">Cloud</a>
             </div>
-            <div class="navbar-collapse collapse">
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>
+                        <div class="btn-group navBtn" style="margin: 0">
+                            <button type="button" class="btn btn-primary navbar-btn navBtn" onclick="window.location.href = '@Url.Action("Back", "Home")'" title="Назад">
+                                <img src="/Content/Images/BackIcon.png" width="32" height="32" alt="CreateNewFolder" />
+                                <span>Повернутися</span>
+                            </button>
+                            <button type="button" class="btn btn-primary navbar-btn navBtn" data-toggle="modal" data-target="#createNewFolder" title="Создать новую папку">
+                                <img src="/Content/Images/CreateFolderIcon.png" width="32" height="32" alt="CreateNewFolder" />
+                                <span>Створити нову папку</span>
+                            </button>
+                            <button type="button" class="btn btn-primary navbar-btn navBtn" data-toggle="modal" data-target="#uploadFiles" title="Загрузить файл(-ы)">
+                                <img src="/Content/Images/UploadFilesIcon.png" width="32" height="32" alt="UploadNewFiles" />
+                                <span>Завантажити файл(-и)</span>
+                            </button>
+
+                        </div>
+                    </li>
+                </ul>
+
+                @using (@Html.BeginForm("Search", "Home", FormMethod.Post, new { @class = "navbar-form navbar-left" }))
+                {
+                    <div class="input-group">
+                        @Html.TextBox("fileName", null, new { @class = "form-control", placeholder = "Введіть назву файлу" })
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" type="submit" title="Поиск">
+                                <i class="glyphicon glyphicon-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                <ul class="nav navbar-nav navbar-right">
+                    @{
+                        if (isShowButtons)
+                        {
+                            <li><a href="@Url.Action("Index", "Registration")"><span class="glyphicon glyphicon-user"></span> Регістрація</a></li>
+                            <li><a href="@Url.Action("Index", "Authorization")"><span class="glyphicon glyphicon-log-in"></span> Авторизація</a></li>
+                        }
+                        else
+                        {
+                            <li><a href="@Url.Action("SignOut", "Authorization")"><span class="glyphicon glyphicon-log-out"></span> Вихід</a></li>
+                        }
+                    }
                 </ul>
             </div>
         </div>
-    </div>
-    <div class="container body-content">
+    </nav>
+
+    <div class="container">
         @RenderBody()
         <hr />
-        <footer>
+        <footer class="text-center">
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>
     </div>
@@ -38,5 +100,102 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Create Folder Modal Dialog -->
+    <div id="createNewFolder" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width: 350px;">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Нова тека</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="@Url.Action("CreateFolder", "Home")">
+                        <input type="text" name="folderName" id="folderName" style="width: 300px;" required />
+                        <br />
+                        <br />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Відміна</button>
+                        <input type="submit" value="Створити" class="btn btn-info" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Files Modal Dialog -->
+    <div id="uploadFiles" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width: 350px;">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Завантаження файлів</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="@Url.Action("UploadFiles", "Home")" enctype="multipart/form-data">
+                        <input type="file" name="files" id="files" multiple />
+                        <br />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Відміна</button>
+                        <input type="submit" value="Завантажити" class="btn btn-info" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename file Modal Dialog -->
+    <div id="renameFile" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width: 350px;">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Змінити назву</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="@Url.Action("Rename", "Home")">
+                        <input type="hidden" id="oldFileName" readonly required name="oldFileName" />
+                        <input type="hidden" name="fileType" id="fileType" required readonly />
+                        <label for="newFileName">Нова назва</label>
+                        <br />
+                        <input type="text" name="newFileName" id="newFileName" required style="width: 300px;" />
+                        <br />
+                        <br />
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Відміна</button>
+                        <input type="submit" value="Перейменувати" class="btn btn-info" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Move file Modal Dialog -->
+    <div id="moveFile" class="modal fade" role="dialog">
+        <div class="modal-dialog" style="width: 350px;">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Переміщення файлу</h4>
+                </div>
+                <div class="modal-body">
+                    <form method="post" action="@Url.Action("MoveFile", "Home")">
+                        <input type="hidden" id="movedFileName" readonly required name="fileName" />
+                        <input type="hidden" name="fileType" id="movedfileType" required readonly />
+
+                        @Html.Action("_GetFoldersThreed", "Home")
+
+                        <br /><br />
+
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Відміна</button>
+                        <input type="submit" value="Переместить" class="btn btn-info" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "_GetFoldersThreed";
+}
+
+@model List<string>
+
+@Html.Label("newPath", "Оберіть теку")
+<br />
+@Html.DropDownList("newPath", new SelectList((List<string>)Model))
