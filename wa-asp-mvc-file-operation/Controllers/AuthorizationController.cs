@@ -25,27 +25,32 @@ namespace wa_asp_mvc_file_operation.Controllers
         
 
         [HttpPost]
-        public ActionResult Index(string login, string password)
+        public ActionResult Index(CloudUser user)
         {
-            if (WS.IsGoodString(login) && WS.IsGoodString(password))
+            if (user!=null && WS.IsGoodString(user.Login) && WS.IsGoodString(user.Passwords))
             {
                 try
                 {
                     using (var context = new StorageBoxContext())
                     {
                         CloudUser cloudUser = context.Users.FirstOrDefault(
-                            x => x.Login.ToLower().Equals(login.ToLower()) 
-                            && x.Passwords.Equals(password));
-
-                        string basePath = Server.MapPath("~/Upload/PrivateRepository");
-                        if (Directory.Exists(basePath)) 
+                            x => x.Login.ToLower().Equals(user.Login.ToLower()) 
+                            && x.Passwords.Equals(user.Passwords));
+                        if (cloudUser != null)
                         {
-                            string path = Path.Combine(basePath, cloudUser.FolderName);
-                            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+                            if (WS.IsGoodString(cloudUser.FolderName))
+                            {
+                                string basePath = Server.MapPath("~/Upload/PrivateRepository");
+                                if (Directory.Exists(basePath))
+                                {
+                                    string path = Path.Combine(basePath, cloudUser.FolderName);
+                                    if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
 
-                            Session["currPuth"] = path;
-                            Session["rootPuth"] = path;
-                            Session["authorized"] = true;
+                                    Session["currPuth"] = path;
+                                    Session["rootPuth"] = path;
+                                    Session["authorized"] = true;
+                                }
+                            }
                         }
                     }
                 }

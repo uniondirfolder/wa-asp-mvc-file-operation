@@ -17,5 +17,12 @@ namespace wa_asp_mvc_file_operation
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            Session["currPath"] = Server.MapPath("~/Upload/PublicRepository");
+            Session["rootPath"] = Server.MapPath("~/Upload/PublicRepository");
+            Session["authorized"] = false;
+        }
     }
 }

@@ -17,13 +17,8 @@ namespace wa_asp_mvc_file_operation.Data.Models
         public string Login { get; set; }
 
         [Required]
-        private string _passwords;
+        public string Passwords { get; set; }
 
-        public string Passwords
-        {
-            get { return _passwords; }
-            set { _passwords = value; SetPersonalFolder(); }
-        }
 
         [Required]
         public string Name { get; set; }
@@ -32,7 +27,7 @@ namespace wa_asp_mvc_file_operation.Data.Models
         public string FolderName { get; set; }
 
         public bool IsGoodInfo() => (WS.IsGoodString(Login) && WS.IsGoodString(Passwords) && WS.IsGoodString(Name));
-        private void SetPersonalFolder() 
+        public void SetPersonalFolder() 
         {
             if(IsGoodInfo()) 
             {

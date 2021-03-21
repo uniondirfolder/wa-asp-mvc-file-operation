@@ -31,9 +31,11 @@ namespace wa_asp_mvc_file_operation.Controllers
                         {
                             try
                             {
+                                cloudUser.SetPersonalFolder();
                                 context.Users.Add(cloudUser);
                                 context.SaveChanges();
                                 transaction.Commit();
+                                
                             }
                             catch
                             {

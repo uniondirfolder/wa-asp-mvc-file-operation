@@ -10,17 +10,20 @@
 
     <ul class="list-group">
         @{
-            foreach (var file in Model)
+            if (Model != null)
             {
-                if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.File)
+                foreach (var file in Model)
                 {
+                    if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.File)
+                    {
                     @Html.Partial("_fileView", file);
-                }
-                else if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.Folder)
-                {
+                    }
+                    else if (file.FileType == wa_asp_mvc_file_operation.Data.Models.FileType.Folder)
+                    {
                     @Html.Partial("_folderView", file);
+                        }
+                    }
                 }
             }
-        }
     </ul>
 </div>
